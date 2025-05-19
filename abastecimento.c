@@ -14,6 +14,9 @@ struct areadeCarga{
     pthread_cond_t cond_funcionario;                       // variável de condição para os funcionários
 };
 
+void* f_funcionario (void *arg);
+void* f_caminhao (void *arg);
+
 
 int main (int argc, char *argv) {
 
@@ -60,6 +63,30 @@ int main (int argc, char *argv) {
     pthread_cond_init(&aux.cond_caminhao,NULL);           // inicialziando condição
     pthread_cond_init(&aux.cond_funcionario,NULL);       // inicializando condição
 
+    pthread_t funcionarios[f];
+    pthread_t caminhao;
+
+    for (int i = 0; i < f; i++){
+        //criando as threads dos funcionários
+        pthread_create(&funcionarios[i],NULL,f_funcionario,&aux);   
+    }
+
+    // criando a thread para o caminhão com a carga
+    pthread_create(&caminhao,NULL,f_caminhao,&aux);
+
+    for(int i = 0; i < f ;i++){
+        // Aguarda todas as threads de funcionários terminarem
+        pthread_join(funcionarios[i],NULL);
+    }
+
+     // Espera a thread do caminhão terminar
+    pthread_join(caminhao,NULL);
 
     return 0;
 }
+
+void* f_funcionario (void *arg){
+
+}
+
+void* f_caminhao (void *arg){}
